@@ -8,3 +8,7 @@ dependency-reduced-pom.xml
 .sync/IgnoreList
 .sync/StreamsList
 /nbproject/
+.classpath
+.factorypath
+.project
+.settings/
