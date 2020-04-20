@@ -19,9 +19,9 @@ pipeline {
          }
 
       }
+
       stage('SCA from Fortify') {
           steps {
-            node {
               unstash 'NewsBotIRCStash'
 
               fortifyUpdate updateServerURL: 'https://update.fortify.com'
@@ -32,7 +32,6 @@ pipeline {
 
               fortifyScan addJVMOptions: '', addOptions: '', buildID: 'NewsBotIRC', customRulepacks: '', logFile: '', maxHeap: '', resultsFile: 'NewsBotIRC.fpr'
             }
-          }
           post {
             // If Maven was able to run the tests, even if some of the test
             // failed, record the test results and archive the jar file.
