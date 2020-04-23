@@ -13,24 +13,21 @@ pipeline {
 
             // Run Maven on a Unix agent.
             sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
-            // Save the workspace
-            stash excludes:'', includes: '**', name: 'NewsBotIRCStash'
          }
 
       }
 
       stage('SCA from Fortify') {
           steps {
-              unstash 'NewsBotIRCStash'
+            fortifyUpdate updateServerURL: 'https://update.fortify.com'
 
-              fortifyUpdate updateServerURL: 'https://update.fortify.com'
+            fortifyClean addJVMOptions: '', buildID: 'NewsBotIRC', logFile: '', maxHeap: ''
 
-              fortifyClean addJVMOptions: '', buildID: 'NewsBotIRC', logFile: '', maxHeap: ''
+            fortifyTranslate addJVMOptions: '', buildID: 'NewsBotIRC', excludeList: '', logFile: '', maxHeap: '', projectScanType: fortifyMaven3(mavenOptions: '')
 
-              fortifyTranslate addJVMOptions: '', buildID: 'NewsBotIRC', excludeList: '', logFile: '', maxHeap: '', projectScanType: fortifyMaven3(mavenOptions: '')
+            fortifyScan addJVMOptions: '', addOptions: '', buildID: 'NewsBotIRC', customRulepacks: '', logFile: '', maxHeap: '', resultsFile: 'NewsBotIRC.fpr'
 
-              fortifyScan addJVMOptions: '', addOptions: '', buildID: 'NewsBotIRC', customRulepacks: '', logFile: '', maxHeap: '', resultsFile: 'NewsBotIRC.fpr'
+            fortifyUpload appName: 'NewsBotIRC', appVersion: '0.2.1-SNAPSHOT', failureCriteria: '', filterSet: '', pollingInterval: '', resultsFile: 'NewsBotIRC.fpr'
             }
           post {
             // If Maven was able to run the tests, even if some of the test
